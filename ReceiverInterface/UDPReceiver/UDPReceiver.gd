@@ -16,7 +16,8 @@ func _ready() -> void:
 		print("UDP Server started and listening on %s:%d" % [ip_address, port])
 
 func get_data() -> PackedByteArray:
-	while socket.get_available_packet_count() == 0:
+	while is_inside_tree() and socket.get_available_packet_count() == 0:
 		await get_tree().process_frame
+
 	var packet = socket.get_packet()
 	return packet
