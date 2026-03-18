@@ -21,11 +21,11 @@ func _ready() -> void:
 func change_state(state: String) -> void:
 	var new_state: State = states.get(state.to_lower())
 	if new_state == null:
-		push_error("State {state} not found in states dictionary.".format({state=state}))
+		DebugLogger.error("State {state} not found in states dictionary.".format({state=state}))
 		return
 
 	if current_state != new_state:
-		print("{name} changing state from {old} to {new}".format({"name": owner.name, "old": current_state.name, "new": new_state.name}))
+		DebugLogger.debug("{name} changing state from {old} to {new}".format({"name": owner.name, "old": current_state.name, "new": new_state.name}))
 		states["previous"] = current_state
 		current_state.exit(owner)
 		current_state.process_mode = Node.PROCESS_MODE_DISABLED

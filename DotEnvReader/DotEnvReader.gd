@@ -3,7 +3,7 @@ class_name DotEnvReader
 static func load_env(path := "res://.env") -> Dictionary:
     var env := {}
     if not FileAccess.file_exists(path):
-        push_warning(".env file not found: %s" % path)
+        DebugLogger.warning(".env file not found: %s" % path)
         return env
 
     var file := FileAccess.open(path, FileAccess.READ)
