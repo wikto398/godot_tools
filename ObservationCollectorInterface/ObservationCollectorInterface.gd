@@ -3,10 +3,6 @@ class_name ObservationCollectorInterface extends Node
 
 static var instance: ObservationCollectorInterface = null
 
-var observation: Dictionary = {}
-var action_mask: Dictionary = {}
-var reward: float = 0.0
-
 func _ready() -> void:
     if instance:
         push_error("Multiple instances of ObservationCollector detected. This is not supported.")
@@ -14,13 +10,11 @@ func _ready() -> void:
         instance = self
 
 func get_observation() -> Dictionary:
-    observation = _observation()
-    action_mask = _action_mask()
-    reward = _reward()
     var result: Dictionary = {
-        "observation": observation,
-        "action_mask": action_mask,
-        "reward": reward
+        "observation": _observation(),
+        "action_mask": _action_mask(),
+        "reward": _reward(),
+        "done": _done(),
     }
     DebugLogger.trace("Generated observation: " + str(result))
     return result
@@ -28,3 +22,4 @@ func get_observation() -> Dictionary:
 @abstract func _observation() -> Dictionary
 @abstract func _action_mask() -> Dictionary
 @abstract func _reward() -> float
+@abstract func _done() -> bool
