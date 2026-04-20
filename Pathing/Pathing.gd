@@ -30,7 +30,7 @@ static func a_star(start: Field, goal: Field, field_grid: FieldGrid, heuristic: 
 	DebugLogger.debug("No path found from {start} to {goal}".format({start = start.grid_position, goal = goal.grid_position}))
 	return []
 
-static func dijkstra(start: Field, max_range: int, field_grid: FieldGrid, condition: Condition, unit: Unit = null) -> Array[Field]:
+static func dijkstra(start: Field, max_range: int, field_grid: FieldGrid, condition: Condition, unit: Unit = null) -> Dictionary:
 	var open_set: PriorityQueue = PriorityQueue.new()
 	var came_from: Dictionary[Field, Field] = {}
 	var g_score: Dictionary[Field, int] = {}
@@ -44,12 +44,7 @@ static func dijkstra(start: Field, max_range: int, field_grid: FieldGrid, condit
 	while not open_set.is_empty():
 		var current: Field = open_set.pop()
 
-		if visited.has(current):
-			continue
 		visited[current] = true
-
-		if g_score[current] > max_range:
-			continue
 
 		reachable_fields.append(current)
 
@@ -59,12 +54,16 @@ static func dijkstra(start: Field, max_range: int, field_grid: FieldGrid, condit
 
 			var tentative_g_score = g_score[current] + neighbor.movement_cost
 
+			if tentative_g_score > max_range:
+				continue
+
 			if not g_score.has(neighbor) or tentative_g_score < g_score[neighbor]:
 				came_from[neighbor] = current
 				g_score[neighbor] = tentative_g_score
-				open_set.push(neighbor, g_score[neighbor])
+				if not visited.has(neighbor):
+					open_set.push(neighbor, g_score[neighbor])
 
-	return reachable_fields
+	return {"reachable_fields": reachable_fields, "came_from": came_from}
 
 static func _reconstruct_path(came_from: Dictionary[Field, Field], current: Field) -> Array[Field]:
 	var total_path: Array[Field] = [current]
@@ -72,3 +71,12 @@ static func _reconstruct_path(came_from: Dictionary[Field, Field], current: Fiel
 		current = came_from[current]
 		total_path.insert(0, current)
 	return total_path
+
+static func reconstruct_path(came_from: Dictionary[Field, Field], start: Field, target: Field) -> Array[Field]:
+	var path: Array[Field] = []
+	var current: Field = target
+	while current != start:
+		path.push_front(current)
+		current = came_from[current]
+	path.push_front(start)
+	return path
