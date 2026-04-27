@@ -5,5 +5,9 @@ class_name StateMachineUnit extends Unit
 
 func _ready() -> void:
     super._ready()
+    setup()
 
-@abstract func setup() -> void
+func setup() -> void:
+    _setup()
+
+@abstract func _setup() -> void

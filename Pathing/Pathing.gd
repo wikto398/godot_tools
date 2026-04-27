@@ -54,7 +54,7 @@ static func dijkstra(start: Field, max_range: int, field_grid: FieldGrid, condit
 
 			var tentative_g_score = g_score[current] + neighbor.movement_cost
 
-			if tentative_g_score > max_range:
+			if max_range != -1 and tentative_g_score > max_range:
 				continue
 
 			if not g_score.has(neighbor) or tentative_g_score < g_score[neighbor]:
