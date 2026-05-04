@@ -1,7 +1,11 @@
 @abstract
 class_name InfoIconInterface extends PanelContainer
 
-@export var data: Resource = null
+var data: Resource:
+	get:
+		return _get_data()
+	set(value):
+		_set_data(value)
 
 func _on_mouse_exited() -> void:
 	if data == null:
@@ -13,8 +17,5 @@ func _on_mouse_entered() -> void:
 		return
 	PopUp.show_info(PopUp.get_elements_position(self), data)
 
-@abstract func insert_data(_data: Resource) -> void
-
-func _ready() -> void:
-	if data:
-		insert_data(data)
+@abstract func _get_data() -> Resource
+@abstract func _set_data(value: Resource) -> void
