@@ -65,6 +65,20 @@ static func dijkstra(start: Field, max_range: int, field_grid: FieldGrid, condit
 
 	return {"reachable_fields": reachable_fields, "came_from": came_from}
 
+static func get_nearest_field_towards_goal(start: Field, goal: Field, max_range: int, field_grid: FieldGrid, condition: Condition, unit: Unit = null) -> Field:
+	var result = dijkstra(start, max_range, field_grid, condition, unit)
+	var reachable_fields: Array[Field] = result["reachable_fields"]
+	var best_field: Field = null
+	var best_distance: float = INF
+	for field in reachable_fields:
+		if field == start:
+			continue
+		var dist = field.grid_position.distance_to(goal.grid_position)
+		if dist < best_distance:
+			best_distance = dist
+			best_field = field
+	return best_field
+
 static func _reconstruct_path(came_from: Dictionary[Field, Field], current: Field) -> Array[Field]:
 	var total_path: Array[Field] = [current]
 	while came_from.has(current):
