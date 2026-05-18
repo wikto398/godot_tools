@@ -9,7 +9,7 @@ var field: Field:
 			field.unit = null
 		field = value
 		if field:
-			global_position = field.global_position
+			# global_position = field.global_position
 			field.unit = self
 			_on_field_changed()
 var target_position: Field = null:
