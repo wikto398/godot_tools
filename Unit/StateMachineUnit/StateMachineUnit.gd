@@ -11,3 +11,6 @@ func setup() -> void:
     _setup()
 
 @abstract func _setup() -> void
+
+func _on_field_changed() -> void:
+    global_position = field.global_position
