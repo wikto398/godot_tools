@@ -42,7 +42,17 @@ func start_communication() -> void:
 
 func _handle_received_data(received_data: PackedByteArray) -> void:
 	DebugLogger.debug("Handling received data: " + str(received_data))
-	if received_data.get_string_from_utf8() == "RESET":
+	var msg := received_data.get_string_from_utf8()
+
+	if msg.begins_with("RESET"):
+		var parts := msg.split(":")
+		if parts.size() > 1:
+			Global.map_seed = int(parts[1])
+			Global.map_seed_valid = true
+			DebugLogger.info("RESET with map_seed=%d" % Global.map_seed)
+		else:
+			Global.map_seed_valid = false
+			DebugLogger.info("RESET without seed (randomize map)")
 		reset_environment()
 		return
 
