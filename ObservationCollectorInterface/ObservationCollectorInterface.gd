@@ -15,9 +15,13 @@ func get_observation() -> Dictionary:
         "action_mask": _action_mask(),
         "reward": _reward(),
         "done": _done(),
+        "info": _info(),
     }
     DebugLogger.trace("Generated observation: " + str(result))
     return result
+
+func _info() -> Dictionary:
+    return {}
 
 @abstract func _observation() -> Dictionary
 @abstract func _action_mask() -> Dictionary

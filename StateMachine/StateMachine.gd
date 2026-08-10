@@ -2,7 +2,11 @@ extends Node
 
 class_name StateMachine
 
-@export var current_state: State = null
+@export var current_state: State = null:
+    set(value):
+        current_state = value
+        if current_state:
+            current_state_name = current_state.name
 var current_state_name: String = ""
 var states: Dictionary[String, State] = {}
 
@@ -32,7 +36,6 @@ func change_state(state: String) -> void:
         current_state = new_state
         current_state.process_mode = Node.PROCESS_MODE_INHERIT
         current_state.enter(owner)
-        current_state_name = current_state.name
 
 func enable() -> void:
     process_mode = Node.PROCESS_MODE_INHERIT
