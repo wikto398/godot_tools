@@ -35,7 +35,7 @@ func start_communication() -> void:
 	DebugLogger.info("Starting communication with trainer...")
 	communicating = true
 	while communicating:
-		data_to_send = Messagepack.encode(observation_collector.get_observation())["value"]
+		data_to_send = observation_collector.get_observation_bytes()
 		sender.send_data(data_to_send)
 		received_data = await receiver.wait_for_data()
 		_handle_received_data(received_data)

@@ -20,6 +20,9 @@ func get_observation() -> Dictionary:
     DebugLogger.trace("Generated observation: " + str(result))
     return result
 
+func get_observation_bytes() -> PackedByteArray:
+    return Messagepack.encode(get_observation())["value"]
+
 func _info() -> Dictionary:
     return {}
 
