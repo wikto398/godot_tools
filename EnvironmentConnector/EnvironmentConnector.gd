@@ -2,7 +2,7 @@ class_name EnvironmentConnector extends Node
 
 @onready var receiver: ReceiverInterface = $Receiver
 @onready var sender: SenderInterface = $Sender
-@onready var observation_collector: ObservationCollector = $ObservationCollector
+@onready var observation_collector: ObservationCollectorInterface = $ObservationCollector
 @onready var action_executor: ActionExecutorInterface = $ActionExecutor
 
 var data: Dictionary
