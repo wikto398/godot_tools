@@ -7,6 +7,7 @@ class_name StateMachine
         current_state = value
         if current_state:
             current_state_name = current_state.name
+@export var valid_state_transitions: Dictionary[State, Array] = {}
 var current_state_name: String = ""
 var states: Dictionary[String, State] = {}
 
@@ -37,12 +38,33 @@ func change_state(state: String) -> void:
         current_state.process_mode = Node.PROCESS_MODE_INHERIT
         current_state.enter(owner)
 
+func request_state_change(state: String) -> bool:
+    var target_state: State = states.get(state.to_lower())
+    if target_state == null:
+        DebugLogger.error("State {state} not found in states dictionary.".format({state=state}))
+        return false
+    if current_state == null:
+        change_state(state)
+        return true
+    if valid_state_transitions.has(current_state):
+        var allowed_transitions: Array = valid_state_transitions[current_state]
+        DebugLogger.trace("{name} allowed transitions from {current}: {allowed}".format({"name": owner.name, "current": current_state.name, "allowed": allowed_transitions}))
+        if state in allowed_transitions:
+            change_state(state)
+            return true
+        else:
+            DebugLogger.trace("{name} cannot transition from {current} to {target}".format({"name": owner.name, "current": current_state.name, "target": target_state.name}))
+            return false
+    DebugLogger.trace("{name} has no valid transitions defined for {current}, allowing transition to {target}".format({"name": owner.name, "current": current_state.name, "target": target_state.name}))
+    change_state(state)
+    return true
+
 func enable() -> void:
     process_mode = Node.PROCESS_MODE_INHERIT
 
 func disable() -> void:
     process_mode = Node.PROCESS_MODE_DISABLED
 
-func _update(delta: float) -> void:
+func update(delta: float) -> void:
     if current_state != null:
         current_state.update(delta, owner)
