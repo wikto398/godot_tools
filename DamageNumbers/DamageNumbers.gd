@@ -1,25 +1,29 @@
 class_name DamageNumbers extends Label
 
-var damage: int
+var amount: int
 var critical_hit: bool = false
+var is_heal: bool = false
 var target_node: Node2D
 
-func _init(_damage: int, _target_node: Node2D,_critical_hit: bool = false) -> void:
-	damage = _damage
+func _init(_amount: int, _target_node: Node2D, _critical_hit: bool = false, _is_heal: bool = false) -> void:
+	amount = _amount
 	critical_hit = _critical_hit
+	is_heal = _is_heal
 	target_node = _target_node
 
 func _ready() -> void:
-	self.text = str(damage)
-	show_damage()
+	self.text = str(amount)
+	show_number()
 
-func show_damage() -> void:
+func show_number() -> void:
 	_modify_parameters()
 	_create_tween()
 
 func _modify_parameters() -> void:
-	text = str(damage)
+	text = ("+%d" % amount) if is_heal else str(amount)
 	add_theme_font_size_override("font_size", 24)
+	if is_heal:
+		add_theme_color_override("font_color", Color(0.35, 0.9, 0.35))
 	global_position = target_node.global_position + Vector2(0, -20)
 
 func _create_tween() -> Tween:
