@@ -3,4 +3,4 @@ class_name Decorator extends TreeElement
 
 @export var child: TreeElement
 
-@abstract func tick(blackboard: Blackboard) -> Status
+@abstract func _do_tick(blackboard: Blackboard) -> Status

@@ -1,6 +1,6 @@
 class_name ContinueOnErrorDecorator extends Decorator
 
-func tick(blackboard: Blackboard) -> Status:
+func _do_tick(blackboard: Blackboard) -> Status:
 	var child_status = await child.tick(blackboard)
 	if child_status == Status.SUCCESS:
 		return Status.SUCCESS

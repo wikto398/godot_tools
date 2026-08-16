@@ -1,5 +1,5 @@
 @abstract
 class_name Action extends TreeElement
 
-func tick(blackboard: Blackboard) -> Status:
+func _do_tick(blackboard: Blackboard) -> Status:
     return Status.SUCCESS
