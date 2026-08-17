@@ -21,9 +21,11 @@ func show_number() -> void:
 
 func _modify_parameters() -> void:
 	text = ("+%d" % amount) if is_heal else str(amount)
-	add_theme_font_size_override("font_size", 24)
+	add_theme_font_size_override("font_size", 34 if critical_hit else 24)
 	if is_heal:
 		add_theme_color_override("font_color", Color(0.35, 0.9, 0.35))
+	elif critical_hit:
+		add_theme_color_override("font_color", Color(1.0, 0.55, 0.1))
 	global_position = target_node.global_position + Vector2(0, -20)
 
 func _create_tween() -> Tween:
