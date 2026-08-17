@@ -12,6 +12,7 @@ enum Status {
 enum CooldownGroup {
     NONE,
     ATTACK,
+    SPECIAL,
 }
 
 @export var cooldown: float = 0.0
