@@ -1,35 +1,64 @@
 # Godot Tools
 
-Repository for tools and scripts that are used across multiple of my Godot projects.
+Tools and scripts shared across several of my Godot projects. This game consumes it as the
+`godot_tools` **git submodule**.
 
-## Most important tools: 
-### ActionExecutorInterface
-Interface for executing actions. This is used in the `ActionExecutor` node, which can be used for RL agents to execute actions in the environment. The `ActionExecutorInterface` allows for a clean separation of concerns, as the `ActionExecutor` node can be used with any implementation of the `ActionExecutorInterface`.
+Modules are plain GDScript classes with `class_name`, so they are available project-wide
+without path imports; some are also registered as autoloads (see the game's
+`project.godot`). A few ship interfaces intended to be implemented per project.
 
-### ArgsParser
-Utility for parsing command line arguments. 
+## Interfaces
 
-### BehaviourTree
-Implementation of a behaviour tree. Consists of usual nodes such as 'Selector', 'Sequence', 'Decorator', and 'Action'. Made so that it can be easily created and edited in the Godot editor with option to be saved as a resource. 
+| Module | Purpose |
+|--------|---------|
+| `ActionExecutorInterface` | Contract for executing an action in the environment (the game's `ActionExecutor` implements it) |
+| `ObservationCollectorInterface` | Contract for building an observation from the environment |
+| `SenderInterface` / `ReceiverInterface` | Contracts for sending observations / receiving actions; UDP implementations (`UDPSender`/`UDPReceiver`) are provided and used by the game |
+| `InfoIconInterface`, `InfoPanelInterface`, `PopUpInterface` | UI contracts for hover/panel/popup widgets |
 
-### DebugLogger
-Utility for logging debug messages. Can be used to log messages to the console or to a file. Can be configured to log messages of different levels (e.g. info, warning, error).
+## Communication
 
-### EnvironmentConnector
-Used as a connection between the game itself and agent. Can utilize different communication methods based on the implementation of the `Sender` and `Receiver` interfaces. 
+| Module | Purpose |
+|--------|---------|
+| `EnvironmentConnector` | Bridges the game and the agent; picks a `Sender`/`Receiver` implementation |
+| `SenderInterface/`, `ReceiverInterface/` | UDP-based transport implementations |
+| `MessagePack` | MessagePack encode/decode helper |
+| `ArgsParser` | Parses command-line arguments (used as an autoload) |
 
-### Grids
-Implementation of grids. Currently hex-based flat-topped grid is fully implemented.
+## Grids & pathing
 
-### Pathing
-Implementation of pathfinding algorithms. This includes A* and Dijkstra's algorithm. Should work on all grids extending "FieldGrid" class. 
+| Module | Purpose |
+|--------|---------|
+| `Grids` | Grid abstractions — `Field`, `FieldGrid`, and `PointyHexGrid` (the game's `TerrainFieldGrid` extends `PointyHexGrid`) |
+| `Pathing` | Pathfinding (A*, Dijkstra) over any `FieldGrid` |
+| `PriorityQueue` | Priority queue used by pathfinding |
 
-### StateMachine
-Implementation of a state machine. Consists of states and transitions.
+## State & behaviour
 
-### PriorityQueue
-Implementation of a priority queue. Used in pathfinding algorithms.
+| Module | Purpose |
+|--------|---------|
+| `StateMachine` | Generic state machine with states, transitions and signals (`SignalStateMachine` is used by the game's `Builder`) |
+| `Unit` | Base unit plus `StateMachineUnit` |
+| `BehaviourTree` | Behaviour tree (`Selector`, `Sequence`, `Decorator`, `Action`) editable in the editor and saveable as a resource |
+| `Condition` | Boolean condition combinators (`ANDCondition`, `ORCondition`) |
 
-### Sender and Receiver interfaces
-Interfaces for sending observations and receiving actions. Used in the `EnvironmentConnector` node to send observations from the environment to the agent and receive actions from the agent to execute in the environment.
-Currently only udp-based implementations are available, but the interfaces allow for easy implementation of other communication methods (e.g. shared memory, sockets, etc.).
+## Components & utilities
+
+| Module | Purpose |
+|--------|---------|
+| `Component` / `Component2D` | Component base classes for attaching behaviour to entities |
+| `DamageNumbers` | Floating damage-number display |
+| `DebugLogger` | Leveled logging to console/file (used as an autoload) |
+| `DotEnvReader` | Loads a `.env` file into the process environment |
+
+## Used by this game
+
+Verified consumers: `EnvironmentConnector` + `UDPSender`/`UDPReceiver` (wired in
+`modules/MainGame/MainGame.tscn` and `autoload/RLCommunicator`), `SignalStateMachine`
+(`modules/TurnUnit/Builder`), `PointyHexGrid` (via `TerrainFieldGrid`), `Pathing`, `Unit`,
+`ArgsParser` and `DebugLogger` (autoloads).
+
+## See also
+
+- [`../AGENTS.md`](../AGENTS.md) — how the game wires these together
+- [`../README.md`](../README.md) — the game
